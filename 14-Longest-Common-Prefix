@@ -1,0 +1,54 @@
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+    
+    insert(s) {
+        let currentNode = this.root;
+        for(let char of s) {
+            if(currentNode.children.has(char)) {
+                currentNode = currentNode.children.get(char);
+            } else {
+                currentNode.children.set(char, new TrieNode(char));
+                currentNode = currentNode.children.get(char);
+            }
+        }
+        currentNode.isWord = true;
+    }
+    
+    getLongestPrefix() {
+        let currentNode = this.root;
+        let prefix = '';
+        while(currentNode.children.size === 1 && !currentNode.isWord) {
+            console.log(currentNode)
+            currentNode = [...currentNode.children.values()][0];
+            prefix += currentNode.data ? currentNode.data : '';
+        }
+        return prefix;
+    }
+}
+
+class TrieNode {
+    constructor(val) {
+        this.data = val;
+        this.children = new Map();
+        this.isWord = false;
+    }
+}
+
+var longestCommonPrefix = function(strs) {
+    let trie = new Trie();
+    for(let word of strs) {
+        if(word.length === 0) {
+            return "";
+        }
+        trie.insert(word);
+    }
+    
+    return trie.getLongestPrefix();
+};
